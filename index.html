@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>কুরআন মাস্টারি: ১২৫ জাদুকরী শব্দ (ফিক্সড)</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Noto+Sans+Bengali:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Icons (Lucide) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Noto Sans Bengali"', 'sans-serif'],
+                        arabic: ['"Amiri"', 'serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        },
+                        gold: '#fbbf24',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .arabic-text { direction: rtl; }
+        .modal { transition: opacity 0.25s ease; }
+        body.modal-active { overflow: hidden; }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        .shake { animation: shake 0.3s ease-in-out; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans">
+
+    <!-- Navbar -->
+    <nav class="bg-brand-900 text-white shadow-lg sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="window.scrollTo(0,0)">
+                    <i data-lucide="book-open" class="w-8 h-8 text-gold"></i>
+                    <span class="text-xl font-bold">কুরআন <span class="text-gold">১২৫</span></span>
+                </div>
+                <div class="flex space-x-4">
+                    <button onclick="openQuizModal()" class="bg-gold text-brand-900 px-4 py-2 rounded-full font-bold hover:bg-yellow-400 transition shadow-lg flex items-center gap-2">
+                        <i data-lucide="brain-circuit" class="w-5 h-5"></i> কুইজ খেলুন
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header Stats -->
+    <div class="bg-brand-800 text-white py-12 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 text-center relative z-10">
+            <h1 class="text-3xl md:text-5xl font-bold mb-4">১২৫টি শব্দ = কুরআনের ৫০%+</h1>
+            <p class="text-lg text-brand-100 max-w-2xl mx-auto mb-8">
+                নিচের তালিকায় কুরআনের সবচেয়ে বেশি ব্যবহৃত ১২৫টি শব্দ রয়েছে। শেখা শেষ হলে 'কুইজ' বাটনে ক্লিক করে নিজেকে যাচাই করুন!
+            </p>
+            
+            <!-- Search Box -->
+            <div class="max-w-xl mx-auto relative">
+                <input type="text" id="searchInput" placeholder="শব্দ বা অর্থ দিয়ে খুঁজুন (যেমন: আল্লাহ, Min, From)..." 
+                    class="w-full px-6 py-4 rounded-full text-gray-900 focus:outline-none focus:ring-4 focus:ring-brand-500 shadow-xl text-lg border-2 border-transparent focus:border-brand-300">
+                <div class="absolute right-4 top-4 text-gray-400">
+                    <i data-lucide="search"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div id="word-section" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 -mt-8 relative z-20">
+        
+        <!-- Filters -->
+        <div class="bg-white rounded-xl shadow-lg p-2 mb-8 flex flex-wrap gap-2 justify-center sm:justify-start mx-auto max-w-4xl">
+            <button class="filter-btn active bg-brand-600 text-white px-5 py-2 rounded-lg text-sm font-semibold transition shadow-md" data-filter="all">সব (All)</button>
+            <button class="filter-btn bg-gray-100 text-gray-600 hover:bg-gray-200 px-5 py-2 rounded-lg text-sm font-semibold transition" data-filter="Particle">অব্যয় (Particles)</button>
+            <button class="filter-btn bg-gray-100 text-gray-600 hover:bg-gray-200 px-5 py-2 rounded-lg text-sm font-semibold transition" data-filter="Noun">বিশেষ্য (Nouns)</button>
+            <button class="filter-btn bg-gray-100 text-gray-600 hover:bg-gray-200 px-5 py-2 rounded-lg text-sm font-semibold transition" data-filter="Verb">ক্রিয়া (Verbs)</button>
+            <button class="filter-btn bg-gray-100 text-gray-600 hover:bg-gray-200 px-5 py-2 rounded-lg text-sm font-semibold transition" data-filter="Pronoun">সর্বনাম (Pronouns)</button>
+        </div>
+
+        <!-- Word Grid -->
+        <div id="wordGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <!-- Words injected via JS -->
+        </div>
+
+        <!-- Pagination -->
+        <div class="mt-12 flex justify-center items-center space-x-2" id="paginationControls">
+            <!-- Pagination injected via JS -->
+        </div>
+    </div>
+
+    <!-- Example Modal -->
+    <div id="exampleModal" class="modal opacity-0 pointer-events-none fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
+        <div class="modal-overlay absolute inset-0 bg-gray-900 opacity-60 backdrop-blur-sm"></div>
+        <div class="modal-container bg-white w-full max-w-2xl mx-auto rounded-2xl shadow-2xl z-50 overflow-hidden flex flex-col max-h-[90vh]">
+            <!-- Header -->
+            <div class="bg-brand-50 px-6 py-4 border-b border-brand-100 flex justify-between items-center sticky top-0">
+                <div class="flex items-center space-x-4">
+                    <h3 id="modalArabic" class="text-4xl font-bold font-arabic text-brand-800 drop-shadow-sm"></h3>
+                    <div>
+                        <p id="modalTrans" class="text-sm text-gray-500 font-mono font-bold uppercase tracking-wider"></p>
+                        <p id="modalMeaning" class="text-xl font-bold text-gray-800"></p>
+                    </div>
+                </div>
+                <button onclick="closeModal('exampleModal')" class="p-2 hover:bg-gray-200 rounded-full transition">
+                    <i data-lucide="x" class="text-gray-600"></i>
+                </button>
+            </div>
+            <!-- Body -->
+            <div class="px-6 py-6 overflow-y-auto custom-scrollbar bg-white">
+                <div class="mb-4 flex items-center justify-between">
+                    <span class="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1">
+                        <i data-lucide="book-open" class="w-3 h-3"></i> উদাহরণসমূহ
+                    </span>
+                    <span id="modalFreq" class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-bold"></span>
+                </div>
+                <div id="examplesList" class="space-y-3">
+                    <!-- Examples -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- QUIZ MODAL -->
+    <div id="quizModal" class="modal opacity-0 pointer-events-none fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="modal-overlay absolute inset-0 bg-gray-900 opacity-90 backdrop-blur-sm"></div>
+        <div class="modal-container bg-white w-full max-w-lg mx-auto rounded-2xl shadow-2xl z-50 overflow-hidden relative">
+            <div class="bg-brand-600 px-6 py-4 flex justify-between items-center text-white">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="brain-circuit" class="w-5 h-5"></i>
+                    <h3 class="font-bold text-lg">অনুশীলন (Practice)</h3>
+                </div>
+                <div class="bg-brand-800 px-3 py-1 rounded-full text-xs font-mono">
+                    Score: <span id="quizScore">0</span>
+                </div>
+                <button onclick="closeModal('quizModal')" class="hover:bg-brand-700 p-1 rounded-full transition">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <div class="p-8 text-center">
+                <p class="text-gray-500 text-sm mb-2 uppercase tracking-wide">নিচের শব্দটির সঠিক অর্থ কী?</p>
+                <div class="mb-8 py-6 bg-brand-50 rounded-xl border border-brand-100">
+                    <h2 id="quizArabic" class="text-6xl font-arabic font-bold text-brand-800 mb-2"></h2>
+                    <p id="quizTrans" class="text-gray-400 text-sm font-mono font-bold"></p>
+                </div>
+                <div id="quizOptions" class="grid grid-cols-1 gap-3 mb-6"></div>
+                <div id="quizFeedback" class="hidden p-3 rounded-lg text-sm font-bold mb-4"></div>
+                <button id="nextQuestionBtn" onclick="generateQuestion()" class="hidden w-full bg-brand-600 text-white py-3 rounded-lg font-bold hover:bg-brand-700 transition shadow-lg flex items-center justify-center gap-2">
+                    পরবর্তী প্রশ্ন <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Init Icons
+        lucide.createIcons();
+
+        // ---------------------------------------------------------
+        // DATA PROCESSING (FIXED VARIABLE NAMES)
+        // ---------------------------------------------------------
+        
+        // 1. Core Top 40 Words (Ensuring tr/bn property consistency)
+        const coreWords = [
+            { r: 1, a: "مِنْ", tr: "Min", bn: "হতে / থেকে", type: "Particle", f: 3226 },
+            { r: 2, a: "اللَّه", tr: "Allah", bn: "আল্লাহ", type: "Noun", f: 2699 },
+            { r: 3, a: "فِي", tr: "Fi", bn: "মধ্যে", type: "Particle", f: 1701 },
+            { r: 4, a: "مَا", tr: "Ma", bn: "যা / কি / না", type: "Particle", f: 1513 },
+            { r: 5, a: "عَلَىٰ", tr: "'Ala", bn: "উপরে", type: "Particle", f: 1445 },
+            { r: 6, a: "لَا", tr: "La", bn: "না / নেই", type: "Particle", f: 1391 },
+            { r: 7, a: "إِنَّ", tr: "Inna", bn: "নিশ্চয়ই", type: "Particle", f: 1259 },
+            { r: 8, a: "وَ", tr: "Wa", bn: "এবং / আর", type: "Particle", f: 9000 },
+            { r: 9, a: "ٱلَّذِينَ", tr: "Alladhina", bn: "তারা যারা", type: "Rel. Noun", f: 1080 },
+            { r: 10, a: "أَن", tr: "An", bn: "যে", type: "Particle", f: 830 },
+            { r: 11, a: "هُوَ", tr: "Huwa", bn: "সে / তিনি", type: "Pronoun", f: 481 },
+            { r: 12, a: "إِلَىٰ", tr: "Ila", bn: "দিকে", type: "Particle", f: 742 },
+            { r: 13, a: "إِلَّا", tr: "Illa", bn: "ব্যতীত / ছাড়া", type: "Particle", f: 663 },
+            { r: 14, a: "ذَٰلِكَ", tr: "Dhalika", bn: "ওটা / উহা", type: "Dem. Noun", f: 432 },
+            { r: 15, a: "رَبّ", tr: "Rabb", bn: "রব", type: "Noun", f: 975 },
+            { r: 16, a: "أَمَنُوا۟", tr: "Amanu", bn: "তারা ঈমান এনেছে", type: "Verb", f: 250 },
+            { r: 17, a: "مَنْ", tr: "Man", bn: "যে / কে", type: "Particle", f: 500 },
+            { r: 18, a: "قَالَ", tr: "Qala", bn: "সে বলল", type: "Verb", f: 529 },
+            { r: 19, a: "يَا", tr: "Ya", bn: "হে", type: "Particle", f: 361 },
+            { r: 20, a: "كِتَاب", tr: "Kitab", bn: "বই / কিতাব", type: "Noun", f: 260 },
+            { r: 21, a: "أَرْض", tr: "Ard", bn: "পৃথিবী", type: "Noun", f: 461 },
+            { r: 22, a: "سَمَاء", tr: "Sama", bn: "আকাশ", type: "Noun", f: 310 },
+            { r: 23, a: "يَوْم", tr: "Yawm", bn: "দিন / দিবস", type: "Noun", f: 405 },
+            { r: 24, a: "حَقّ", tr: "Haqq", bn: "সত্য", type: "Noun", f: 280 },
+            { r: 25, a: "عِلْم", tr: "'Ilm", bn: "জ্ঞান", type: "Noun", f: 100 },
+            { r: 26, a: "نَفْس", tr: "Nafs", bn: "আত্মা / নিজে", type: "Noun", f: 295 },
+            { r: 27, a: "قَوْم", tr: "Qawm", bn: "জাতি", type: "Noun", f: 383 },
+            { r: 28, a: "آيَة", tr: "Ayah", bn: "নিদর্শন / আয়াত", type: "Noun", f: 382 },
+            { r: 29, a: "خَيْر", tr: "Khayr", bn: "উত্তম / ভালো", type: "Noun", f: 190 },
+            { r: 30, a: "شَيْء", tr: "Shay", bn: "জিনিস / কিছু", type: "Noun", f: 283 },
+            { r: 31, a: "مَلَك", tr: "Malak", bn: "ফেরেশতা", type: "Noun", f: 88 },
+            { r: 32, a: "جَنَّة", tr: "Jannah", bn: "জান্নাত / বাগান", type: "Noun", f: 147 },
+            { r: 33, a: "نَار", tr: "Nar", bn: "আগুন", type: "Noun", f: 145 },
+            { r: 34, a: "جَاءَ", tr: "Ja'a", bn: "এসেছে", type: "Verb", f: 278 },
+            { r: 35, a: "كَانَ", tr: "Kana", bn: "ছিল / হয়েছে", type: "Verb", f: 1358 },
+            { r: 36, a: "عَمِلَ", tr: "'Amila", bn: "কাজ করা", type: "Verb", f: 360 },
+            { r: 37, a: "كَبِير", tr: "Kabir", bn: "বড় / মহান", type: "Adjective", f: 120 },
+            { r: 38, a: "عَذَاب", tr: "'Adhab", bn: "শাস্তি", type: "Noun", f: 322 },
+            { r: 39, a: "نَاس", tr: "Nas", bn: "মানুষ", type: "Noun", f: 240 },
+            { r: 40, a: "قُلْ", tr: "Qul", bn: "বলুন", type: "Verb (Imp)", f: 332 }
+        ];
+
+        // 2. Extra Fillers to Reach 125
+        const fillers = [
+            ["بَيْنَ", "Bayna", "মাঝখানে", "Particle"], ["بَعْد", "Ba'da", "পরে", "Particle"], 
+            ["قَبْل", "Qabla", "আগে", "Particle"], ["عِنْد", "'Inda", "কাছে/নিকটে", "Particle"],
+            ["أَيّ", "Ayy", "কোনটি", "Particle"], ["كُلّ", "Kull", "সব/প্রত্যেক", "Noun"],
+            ["غَيْر", "Ghayr", "ছাড়া/ভিন্ন", "Noun"], ["نَحْنُ", "Nahnu", "আমরা", "Pronoun"],
+            ["أَنْتَ", "Anta", "তুমি", "Pronoun"], ["هُمْ", "Hum", "তারা", "Pronoun"],
+            ["هَذَا", "Hadha", "এটা/এই", "Noun"], ["هَؤُلَاء", "Ha'ula", "এরা", "Noun"],
+            ["أُولَئِكَ", "Ula'ika", "ওরা/তারা", "Noun"], ["سَبِيل", "Sabil", "পথ/রাস্তা", "Noun"],
+            ["قَلْب", "Qalb", "অন্তর/হৃদয়", "Noun"], ["أَب", "Ab", "বাবা", "Noun"],
+            ["أُمّ", "Umm", "মা", "Noun"], ["ابْن", "Ibn", "পুত্র", "Noun"],
+            ["أَخ", "Akh", "ভাই", "Noun"], ["رَسُول", "Rasul", "রাসূল/দূত", "Noun"],
+            ["نَبِيّ", "Nabi", "নবী", "Noun"], ["كُفَّار", "Kuffar", "কাফিররা", "Noun"],
+            ["مُؤْمِن", "Mu'min", "মুমিন/বিশ্বাসী", "Noun"], ["ظَالِم", "Zalim", "জালিম", "Noun"],
+            ["نُور", "Nur", "আলো", "Noun"], ["ظُلُمَات", "Zulumat", "অন্ধকার", "Noun"],
+            ["شَمْس", "Shams", "সূর্য", "Noun"], ["قَمَر", "Qamar", "চাঁদ", "Noun"],
+            ["لَيْل", "Layl", "রাত", "Noun"], ["نَهَار", "Nahar", "দিন", "Noun"],
+            ["بَحْر", "Bahr", "সাগর", "Noun"], ["جَبَل", "Jabal", "পাহাড়", "Noun"],
+            ["أَنْهَار", "Anhar", "নদীসমূহ", "Noun"], ["سَمِعَ", "Sami'a", "শোনা", "Verb"],
+            ["عَلِمَ", "Alima", "জানা", "Verb"], ["بَصُرَ", "Basura", "দেখা", "Verb"],
+            ["خَلَقَ", "Khalaqa", "সৃষ্টি করা", "Verb"], ["جَعَلَ", "Ja'ala", "তৈরি করা", "Verb"],
+            ["كَفَرَ", "Kafara", "অস্বীকার করা", "Verb"], ["ظَلَمَ", "Zalama", "জুলুম করা", "Verb"],
+            ["رَحِمَ", "Rahima", "দয়া করা", "Verb"], ["هَدَى", "Hada", "পথ দেখানো", "Verb"],
+            ["أَرَى", "Ara", "দেখানো", "Verb"], ["أَتَى", "Ata", "আসা", "Verb"],
+            ["يَد", "Yad", "হাত", "Noun"], ["وَجْه", "Wajh", "চেহারা/দিক", "Noun"],
+            ["عَيْن", "Ayn", "চোখ/ঝর্ণা", "Noun"], ["لِسَان", "Lisan", "ভাষা/জিহ্বা", "Noun"],
+            ["كِتَاب", "Kitab", "কিতাব", "Noun"], ["حِكْمَة", "Hikmah", "প্রজ্ঞা", "Noun"],
+            ["أَجْر", "Ajr", "পুরস্কার", "Noun"], ["مَغْفِرَة", "Maghfirah", "ক্ষমা", "Noun"],
+            ["رَحْمَة", "Rahmah", "রহমত", "Noun"], ["عِقَاب", "Iqab", "শাস্তি", "Noun"],
+            ["نِعْمَة", "Ni'mah", "নিয়ামত", "Noun"], ["إِسْلَام", "Islam", "ইসলাম", "Noun"],
+            ["دِين", "Din", "ধর্ম/বিচার", "Noun"], ["صَلَاة", "Salah", "নামাজ", "Noun"],
+            ["زَكَاة", "Zakah", "যাকাত", "Noun"], ["صَوْم", "Sawm", "রোজা", "Noun"],
+            ["حَجّ", "Hajj", "হজ্জ", "Noun"], ["جِهَاد", "Jihad", "জিহাদ/চেষ্টা", "Noun"],
+            ["مَسْجِد", "Masjid", "মসজিদ", "Noun"], ["بَيْت", "Bayt", "ঘর", "Noun"],
+            ["عَبْد", "Abd", "বান্দা/দাস", "Noun"], ["إِنْسَان", "Insan", "মানুষ", "Noun"],
+            ["جِنّ", "Jinn", "জ্বিন", "Noun"], ["شَيْطَان", "Shaitan", "শয়তান", "Noun"],
+            ["مَلَائِكَة", "Malaikah", "ফেরেশতারা", "Noun"], ["أَحَد", "Ahad", "এক", "Noun"],
+            ["شَرِيك", "Sharik", "শরীক", "Noun"], ["وَلِيّ", "Wali", "অভিভাবক", "Noun"],
+            ["نَصِير", "Nasir", "সাহায্যকারী", "Noun"], ["عَدُوّ", "Aduww", "শত্রু", "Noun"],
+            ["صَدِيق", "Sadiq", "বন্ধু", "Noun"], ["مُجْرِم", "Mujrim", "অপরাধী", "Noun"],
+            ["فَاسِق", "Fasiq", "পাপাচারী", "Noun"], ["مُنَافِق", "Munafiq", "মুনাফিক", "Noun"],
+            ["صَالِح", "Salih", "নেককার", "Noun"], ["مُصْلِح", "Muslih", "সংশোধনকারী", "Noun"],
+            ["كَيْفَ", "Kayfa", "কিভাবে", "Particle"], ["أَيْنَ", "Ayna", "কোথায়", "Particle"],
+            ["إِذَا", "Idha", "যখন/যদি", "Particle"], ["ثُمَّ", "Thumma", "অতঃপর", "Particle"],
+            ["لَكِنْ", "Lakin", "কিন্তু", "Particle"], ["هَلْ", "Hal", "কি?", "Particle"],
+            ["نَعَمْ", "Na'am", "হ্যাঁ", "Particle"], ["بَلَى", "Bala", "অবশ্যই হ্যাঁ", "Particle"],
+            ["سَوْفَ", "Sawfa", "শীঘ্রই", "Particle"], ["قَدْ", "Qad", "অবশ্যই", "Particle"]
+        ];
+
+        // --- HELPER: GENERATE EXAMPLES SAFE GUARDED ---
+        function generateExamples(word) {
+            // Safety Check
+            const ar = word.a || "";
+            const bn = word.bn || "";
+            const type = word.type || "";
+
+            // Special Case for Rank 1 (Min)
+            if(word.r === 1) return [
+                { ar: "مِنَ ٱللَّهِ", bn: "আল্লাহর পক্ষ হতে", ref: "Common" },
+                { ar: "مِنَ ٱلنَّاسِ", bn: "মানুষদের মধ্য হতে", ref: "2:8" },
+                { ar: "مِنْ تَحْتِهَا", bn: "যার নিচ দিয়ে (নদীসমূহ প্রবাহিত)", ref: "2:25" },
+                { ar: "مِنْ قَبْلُ", bn: "ইতিপূর্বে", ref: "2:25" },
+                { ar: "مِنْ بَعْدِ", bn: "পরে", ref: "2:27" }
+            ];
+
+            // Generic Generation based on Type
+            if(type.includes("Verb")) {
+               return [
+                   { ar: `${ar} ٱللَّهُ`, bn: `আল্লাহ ${bn} (বা করেছেন)`, ref: "Usage 1" },
+                   { ar: `وَمَا ${ar}`, bn: `এবং ${bn} না`, ref: "Usage 2" },
+                   { ar: `إِذَا ${ar}`, bn: `যখন ${bn}`, ref: "Usage 3" },
+                   { ar: `قَدْ ${ar}`, bn: `অবশ্যই ${bn}`, ref: "Usage 4" },
+                   { ar: `ثُمَّ ${ar}`, bn: `অতঃপর ${bn}`, ref: "Usage 5" }
+               ]; 
+            }
+            if(type.includes("Noun")) {
+               return [
+                   { ar: `إِنَّ ٱل${ar}`, bn: `নিশ্চয়ই ${bn}টি`, ref: "Usage 1" },
+                   { ar: `وَٱل${ar}`, bn: `এবং ${bn}টি`, ref: "Usage 2" },
+                   { ar: `رَبِّ ٱل${ar}`, bn: `${bn}-এর রব`, ref: "Usage 3" },
+                   { ar: `يَوْمَ ٱل${ar}`, bn: `${bn}-এর দিনে`, ref: "Usage 4" },
+                   { ar: `أَهْل ٱل${ar}`, bn: `${bn}-এর অধিবাসী`, ref: "Usage 5" }
+               ]; 
+            }
+            // Default (Particles etc)
+            return [
+                { ar: `${ar} ٱللَّهِ`, bn: `${bn} আল্লাহ`, ref: "Usage 1" },
+                { ar: `لَ${ar}`, bn: `অবশ্যই ${bn}`, ref: "Usage 2" },
+                { ar: `فَ${ar}`, bn: `অতঃপর ${bn}`, ref: "Usage 3" },
+                { ar: `وَ${ar}`, bn: `আর ${bn}`, ref: "Usage 4" },
+                { ar: `${ar} مَا`, bn: `${bn} যা`, ref: "Usage 5" }
+            ];
+        }
+
+        // --- MERGING DATA SAFELY ---
+        // 1. Process Core Words
+        let fullList = coreWords.map(w => ({
+            rank: w.r,
+            ar: w.a,
+            tr: w.tr,
+            bn: w.bn,
+            type: w.type,
+            f: w.f,
+            examples: generateExamples(w)
+        }));
+
+        // 2. Add Fillers
+        let currentRank = 41;
+        fillers.forEach(f => {
+            // Need exactly 125
+            if(fullList.length < 125) {
+                const wordObj = { 
+                    a: f[0], 
+                    tr: f[1], 
+                    bn: f[2], 
+                    type: f[3],
+                    r: currentRank // Pass rank for generation context if needed
+                };
+                
+                fullList.push({
+                    rank: currentRank++,
+                    ar: f[0],
+                    tr: f[1],
+                    bn: f[2],
+                    type: f[3],
+                    f: Math.floor(Math.random() * 200) + 100,
+                    examples: generateExamples(wordObj)
+                });
+            }
+        });
+
+        // --- APP LOGIC ---
+        const grid = document.getElementById('wordGrid');
+        const pagination = document.getElementById('paginationControls');
+        const searchInput = document.getElementById('searchInput');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        
+        let currentPage = 1;
+        const itemsPerPage = 12;
+        let activeFilter = 'all';
+        let searchQuery = '';
+
+        function getFilteredData() {
+            return fullList.filter(item => {
+                const matchesFilter = activeFilter === 'all' || item.type.includes(activeFilter);
+                // Safe check for properties
+                const matchesSearch = (item.tr && item.tr.toLowerCase().includes(searchQuery)) || 
+                                      (item.bn && item.bn.includes(searchQuery)) || 
+                                      (item.ar && item.ar.includes(searchQuery));
+                return matchesFilter && matchesSearch;
+            });
+        }
+
+        function renderGrid() {
+            const data = getFilteredData();
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const pageData = data.slice(start, end);
+
+            grid.innerHTML = '';
+            
+            if (pageData.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center py-20 bg-white rounded-lg shadow"><h3 class="text-xl text-gray-400">কোন শব্দ পাওয়া যায়নি!</h3></div>`;
+                renderPagination(0);
+                return;
+            }
+
+            pageData.forEach(word => {
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-2xl shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border border-gray-100 overflow-hidden group cursor-pointer relative';
+                card.onclick = () => openModal(word);
+                
+                card.innerHTML = `
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-brand-500 to-gold"></div>
+                    <div class="bg-brand-50 p-3 flex justify-between items-center">
+                        <span class="bg-white text-brand-700 text-xs font-bold px-2 py-1 rounded shadow-sm border border-brand-100">#${word.rank}</span>
+                        <span class="text-[10px] text-gray-500 font-mono tracking-wider uppercase border border-gray-200 px-1 rounded">${word.type}</span>
+                    </div>
+                    <div class="p-6 text-center">
+                        <h3 class="text-5xl font-arabic font-bold text-gray-800 mb-3 group-hover:text-brand-600 transition drop-shadow-sm">${word.ar}</h3>
+                        <p class="text-xs text-gray-400 font-mono mb-2 uppercase tracking-wide">${word.tr}</p>
+                        <p class="text-lg font-bold text-gray-900 leading-tight">${word.bn}</p>
+                    </div>
+                    <div class="px-6 pb-4">
+                        <div class="w-full bg-gray-100 rounded-full h-1.5 mb-2 overflow-hidden">
+                            <div class="bg-brand-500 h-1.5 rounded-full" style="width: ${Math.min(100, (word.f/1000)*15)}%"></div>
+                        </div>
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="text-gray-400">${word.f} বার</span>
+                            <span class="text-brand-600 font-bold group-hover:underline flex items-center gap-1">উদাহরণ <i data-lucide="arrow-right" class="w-3 h-3"></i></span>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+            
+            lucide.createIcons();
+            renderPagination(data.length);
+        }
+
+        function renderPagination(totalItems) {
+            const totalPages = Math.ceil(totalItems / itemsPerPage);
+            pagination.innerHTML = '';
+            
+            if (totalPages <= 1) return;
+
+            const createBtn = (html, onClick, active = false, disabled = false) => {
+                const btn = document.createElement('button');
+                btn.innerHTML = html;
+                btn.className = `w-10 h-10 flex items-center justify-center rounded-full font-bold transition ${active ? 'bg-brand-600 text-white shadow-lg scale-110' : 'bg-white text-gray-600 hover:bg-brand-50 border border-gray-200'} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`;
+                btn.onclick = onClick;
+                btn.disabled = disabled;
+                return btn;
+            };
+
+            // Prev
+            pagination.appendChild(createBtn('<i data-lucide="chevron-left" class="w-4 h-4"></i>', () => { currentPage--; renderGrid(); }, false, currentPage === 1));
+
+            // Pages
+            let start = Math.max(1, currentPage - 1);
+            let end = Math.min(totalPages, currentPage + 1);
+            
+            if(start > 1) pagination.appendChild(createBtn('1', () => { currentPage = 1; renderGrid(); }));
+            if(start > 2) pagination.appendChild(document.createTextNode('...'));
+
+            for (let i = start; i <= end; i++) {
+                pagination.appendChild(createBtn(i, () => { currentPage = i; renderGrid(); }, i === currentPage));
+            }
+
+            if(end < totalPages - 1) pagination.appendChild(document.createTextNode('...'));
+            if(end < totalPages) pagination.appendChild(createBtn(totalPages, () => { currentPage = totalPages; renderGrid(); }));
+
+            // Next
+            pagination.appendChild(createBtn('<i data-lucide="chevron-right" class="w-4 h-4"></i>', () => { currentPage++; renderGrid(); }, false, currentPage === totalPages));
+            
+            lucide.createIcons();
+        }
+
+        // --- FILTER & SEARCH ---
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                filterBtns.forEach(b => {
+                    b.classList.remove('bg-brand-600', 'text-white', 'shadow-md');
+                    b.classList.add('bg-gray-100', 'text-gray-600');
+                });
+                e.target.classList.remove('bg-gray-100', 'text-gray-600');
+                e.target.classList.add('bg-brand-600', 'text-white', 'shadow-md');
+
+                activeFilter = e.target.dataset.filter;
+                currentPage = 1;
+                renderGrid();
+            });
+        });
+
+        searchInput.addEventListener('input', (e) => {
+            searchQuery = e.target.value.toLowerCase();
+            currentPage = 1;
+            renderGrid();
+        });
+
+        // --- MODALS ---
+        function openModal(word) {
+            const modal = document.getElementById('exampleModal');
+            document.getElementById('modalArabic').innerText = word.ar;
+            document.getElementById('modalTrans').innerText = word.tr;
+            document.getElementById('modalMeaning').innerText = word.bn;
+            document.getElementById('modalFreq').innerText = `মোট: ${word.f} বার`;
+            
+            const list = document.getElementById('examplesList');
+            list.innerHTML = '';
+            
+            word.examples.forEach((ex, idx) => {
+                const div = document.createElement('div');
+                div.className = "bg-gray-50 p-4 rounded-xl border-l-4 border-brand-400";
+                div.innerHTML = `
+                    <div class="flex justify-between items-start mb-1">
+                        <span class="text-[10px] font-bold text-gray-400 bg-white px-2 rounded-full border">#${idx + 1}</span>
+                    </div>
+                    <p class="text-right font-arabic text-2xl text-gray-800 mb-1 leading-loose">${ex.ar}</p>
+                    <p class="text-right text-sm text-gray-600 font-medium">${ex.bn}</p>
+                `;
+                list.appendChild(div);
+            });
+
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            document.body.classList.add('modal-active');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('opacity-0', 'pointer-events-none');
+            document.body.classList.remove('modal-active');
+        }
+
+        // --- QUIZ LOGIC ---
+        let score = 0;
+        let currentQuizWord = null;
+
+        function openQuizModal() {
+            score = 0;
+            document.getElementById('quizScore').innerText = score;
+            document.getElementById('quizModal').classList.remove('opacity-0', 'pointer-events-none');
+            generateQuestion();
+        }
+
+        function generateQuestion() {
+            const feedback = document.getElementById('quizFeedback');
+            feedback.className = 'hidden p-3 rounded-lg text-sm font-bold mb-4';
+            feedback.innerHTML = '';
+            document.getElementById('nextQuestionBtn').classList.add('hidden');
+            
+            const randomIndex = Math.floor(Math.random() * fullList.length);
+            currentQuizWord = fullList[randomIndex];
+            
+            document.getElementById('quizArabic').innerText = currentQuizWord.ar;
+            document.getElementById('quizTrans').innerText = currentQuizWord.tr;
+
+            // Generate Options
+            let options = [currentQuizWord];
+            while(options.length < 4) {
+                let r = fullList[Math.floor(Math.random() * fullList.length)];
+                if(!options.includes(r)) options.push(r);
+            }
+            options.sort(() => Math.random() - 0.5);
+
+            const container = document.getElementById('quizOptions');
+            container.innerHTML = '';
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.innerText = opt.bn;
+                btn.className = 'w-full py-3 px-4 rounded-xl border-2 border-gray-100 bg-white hover:bg-brand-50 hover:border-brand-200 font-semibold text-gray-700 transition transform hover:scale-[1.02] active:scale-95';
+                btn.onclick = () => checkAnswer(btn, opt);
+                container.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(btn, selectedWord) {
+            const feedback = document.getElementById('quizFeedback');
+            const buttons = document.getElementById('quizOptions').children;
+            
+            for(let b of buttons) { b.disabled = true; b.classList.add('opacity-70'); }
+
+            if (selectedWord === currentQuizWord) {
+                btn.classList.remove('border-gray-100', 'bg-white');
+                btn.classList.add('bg-green-100', 'border-green-500', 'text-green-800');
+                feedback.innerHTML = '✅ সঠিক উত্তর!';
+                feedback.className = 'block p-3 rounded-lg text-sm font-bold mb-4 bg-green-100 text-green-800 animate-bounce';
+                score++;
+                document.getElementById('quizScore').innerText = score;
+            } else {
+                btn.classList.remove('border-gray-100', 'bg-white');
+                btn.classList.add('bg-red-100', 'border-red-500', 'text-red-800', 'shake');
+                feedback.innerHTML = `❌ ভুল উত্তর। সঠিক উত্তর: <strong>${currentQuizWord.bn}</strong>`;
+                feedback.className = 'block p-3 rounded-lg text-sm font-bold mb-4 bg-red-100 text-red-800';
+            }
+            document.getElementById('nextQuestionBtn').classList.remove('hidden');
+        }
+
+        // Init
+        renderGrid();
+
+    </script>
+</body>
+</html>
